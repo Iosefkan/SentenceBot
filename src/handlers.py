@@ -141,10 +141,10 @@ async def cmd_get(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     try:
         caption = (
-            f"Target ({SUPPORTED_LANGUAGES[target]['name']}):\n"
-            f"{target_sentence}\n\n"
-            f"Translation to {SUPPORTED_LANGUAGES[source]['name']}:\n"
-            f"{source_sentence}"
+            f"Original in ({SUPPORTED_LANGUAGES[source]['name']}):\n"
+            f"{source_sentence}\n\n"
+            f"Translation to {SUPPORTED_LANGUAGES[target]['name']}:\n"
+            f"{target_sentence}"
         )
         assert update.message is not None
         with open(wav_path, "rb") as f:
@@ -153,7 +153,6 @@ async def cmd_get(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     finally:
         try:
             import os
-
             os.remove(wav_path)
         except Exception:
             pass
