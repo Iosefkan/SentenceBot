@@ -123,10 +123,9 @@ async def cmd_get(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         )
         return
 
-    base = generate_base_sentence()
+    base = generate_base_sentence(SUPPORTED_LANGUAGES[source]['name'])
     try:
         target_sentence = translate(base, target)
-        source_sentence = translate(base, source)
     except Exception:
         await update.message.reply_text("Sorry, translation failed. Please try again.")
         return
@@ -142,7 +141,7 @@ async def cmd_get(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         caption = (
             f"Original in ({SUPPORTED_LANGUAGES[source]['name']}):\n"
-            f"{source_sentence}\n\n"
+            f"{base}\n\n"
             f"Translation to {SUPPORTED_LANGUAGES[target]['name']}:\n"
             f"{target_sentence}"
         )
