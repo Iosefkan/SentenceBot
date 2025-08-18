@@ -30,7 +30,11 @@ def synthesize_to_wav(text: str, lang_code: str) -> str:
         if XTTS_SPEAKER_WAV and os.path.isfile(XTTS_SPEAKER_WAV):
             _tts_model.tts_to_file(text=text, language=tts_lang, speaker_wav=XTTS_SPEAKER_WAV, file_path=tmp_path)
         else:
-            _tts_model.tts_to_file(text=text, language=tts_lang, file_path=tmp_path)
+            if _tts_model.speakers:
+                default_speaker_id = _tts_model.speakers[0]
+                _tts_model.tts_to_file(text=text, language=tts_lang, speaker=default_speaker_id, file_path=tmp_path)
+            else:
+                raise ValueError("No speaker_wav provided and no default speaker_id available.")
     except Exception as e:
         try:
             os.remove(tmp_path)

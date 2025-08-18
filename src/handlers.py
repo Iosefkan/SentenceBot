@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
 
-from config import DEFAULT_DAILY_QUOTA, SUPPORTED_LANGUAGES
+from config import DEFAULT_DAILY_QUOTA, SUPPORTED_LANGUAGES, logger
 from db import (
     ensure_user_row,
     get_user_settings,
@@ -134,7 +134,8 @@ async def cmd_get(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Synthesize target sentence audio
     try:
         wav_path = synthesize_to_wav(target_sentence, target)
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         await update.message.reply_text("Sorry, TTS synthesis failed. Please try again.")
         return
 
