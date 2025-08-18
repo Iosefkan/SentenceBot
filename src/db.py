@@ -2,7 +2,6 @@ import sqlite3
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from typing import Optional, Tuple
-
 from config import DATABASE_PATH, DEFAULT_DAILY_QUOTA, DEFAULT_SOURCE_LANG, DEFAULT_TARGET_LANG
 
 

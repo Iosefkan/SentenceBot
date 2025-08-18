@@ -4,4 +4,5 @@ deep-translator>=1.11.4
 Faker>=19.13.0
 torch>=2.1
 coqui-tts>=0.26.2
-transformers>=4.45.2
+openai>=1.55.1
+pydub>=0.25.1

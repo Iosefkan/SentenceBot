@@ -13,7 +13,7 @@ from db import (
 )
 from language import normalize_lang_code, translate
 from sentence import generate_base_sentence
-from tts import synthesize_to_wav
+from tts import synthesize_to_wav, convert_to_mp3
 
 
 def parse_arg_after_command(update: Update) -> str | None:
@@ -133,6 +133,7 @@ async def cmd_get(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Synthesize target sentence audio
     try:
         wav_path = synthesize_to_wav(target_sentence, target)
+        mp3_path = convert_to_mp3(wav_path)
     except Exception as e:
         logger.error(e)
         await update.message.reply_text("Sorry, TTS synthesis failed. Please try again.")
@@ -140,19 +141,19 @@ async def cmd_get(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     try:
         caption = (
-            f"Original in ({SUPPORTED_LANGUAGES[source]['name']}):\n"
-            f"{base}\n\n"
+            f"Original in {SUPPORTED_LANGUAGES[source]['name']}:\n"
+            f"**`{base}`**\n\n---\n\n"
             f"Translation to {SUPPORTED_LANGUAGES[target]['name']}:\n"
-            f"{target_sentence}"
+            f"**`{target_sentence}`**"
         )
         assert update.message is not None
-        with open(wav_path, "rb") as f:
+        with open(mp3_path, "rb") as f:
             await update.message.reply_document(document=f, caption=caption, parse_mode=ParseMode.HTML)
         increment_usage(user_id)
     finally:
         try:
             import os
-            os.remove(wav_path)
+            os.remove(mp3_path)
         except Exception:
             pass
 

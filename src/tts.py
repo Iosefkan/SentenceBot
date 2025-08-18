@@ -1,6 +1,7 @@
 import os
 import random
 import tempfile
+from pydub import AudioSegment
 
 from config import SUPPORTED_LANGUAGES, XTTS_SPEAKER_WAV, logger
 
@@ -44,4 +45,16 @@ def synthesize_to_wav(text: str, lang_code: str) -> str:
         raise e
     return tmp_path
 
-
+def convert_to_mp3(path) -> str:
+    new_path = path[0:-4] + ".mp3"
+    try:
+        AudioSegment.from_wav(path).export(new_path, format="mp3")
+        os.remove(path)
+    except Exception as e:
+        try:
+            os.remove(new_path)
+            os.remove(path)
+        except Exception:
+            pass
+        raise e
+    return new_path

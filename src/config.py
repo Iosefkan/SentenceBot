@@ -23,6 +23,8 @@ if not BOT_TOKEN:
 
 DATABASE_PATH = os.getenv("DATABASE_PATH", "bot.db")
 XTTS_SPEAKER_WAV = os.getenv("XTTS_SPEAKER_WAV", "").strip() or None
+SENTENCE_GENERATION_MODEL = os.getenv("SENTENCE_GENERATION_MODEL", "openai/gpt-oss-20b")
+API_KEY = os.getenv("SENTENCE_GENERATION_API_KEY")
 
 
 SUPPORTED_LANGUAGES: Dict[str, Dict[str, str]] = {
