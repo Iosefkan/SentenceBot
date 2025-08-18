@@ -44,5 +44,7 @@ def generate_base_sentence(language: str) -> str:
             }
         ]
     )
+    if not completion or not completion.choices:
+        raise ValueError("OpenAI API did not return a valid response or choices.")
     result = completion.choices[0].message.content
     return result

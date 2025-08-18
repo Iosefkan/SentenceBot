@@ -48,7 +48,14 @@ def synthesize_to_wav(text: str, lang_code: str) -> str:
 def convert_to_mp3(path) -> str:
     new_path = path[0:-4] + ".mp3"
     try:
-        AudioSegment.from_wav(path).export(new_path, format="mp3")
+        sound = AudioSegment.from_wav(path)
+        
+        sound = sound.set_frame_rate(44100)
+        sound = sound.set_channels(2)
+        sound = sound.set_sample_width(2)
+        
+        sound.export(new_path, format="mp3", bitrate="192k")
+        
         os.remove(path)
     except Exception as e:
         try:

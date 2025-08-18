@@ -6,3 +6,6 @@ torch>=2.1
 coqui-tts>=0.26.2
 openai>=1.55.1
 pydub>=0.25.1
+cutlet
+pypinyin
+hangul_romanize

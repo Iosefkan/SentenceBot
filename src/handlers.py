@@ -13,7 +13,7 @@ from db import (
 )
 from language import normalize_lang_code, translate
 from sentence import generate_base_sentence
-from tts import synthesize_to_wav, convert_to_mp3
+from tts import synthesize_to_wav
 
 
 def parse_arg_after_command(update: Update) -> str | None:
@@ -123,17 +123,22 @@ async def cmd_get(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         )
         return
 
-    base = generate_base_sentence(SUPPORTED_LANGUAGES[source]['name'])
+    try:
+        base = generate_base_sentence(SUPPORTED_LANGUAGES[source]['name'])
+    except Exception as e:
+        logger.error(e)
+        await update.message.reply_text("Sorry, sentence generation failed. Please try again.")
+        return
+    
     try:
         target_sentence = translate(base, target)
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         await update.message.reply_text("Sorry, translation failed. Please try again.")
         return
 
-    # Synthesize target sentence audio
     try:
         wav_path = synthesize_to_wav(target_sentence, target)
-        mp3_path = convert_to_mp3(wav_path)
     except Exception as e:
         logger.error(e)
         await update.message.reply_text("Sorry, TTS synthesis failed. Please try again.")
@@ -142,18 +147,18 @@ async def cmd_get(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         caption = (
             f"Original in {SUPPORTED_LANGUAGES[source]['name']}:\n"
-            f"**`{base}`**\n\n---\n\n"
+            f"<b>{base}</b>\n-------------------------------------------\n"
             f"Translation to {SUPPORTED_LANGUAGES[target]['name']}:\n"
-            f"**`{target_sentence}`**"
+            f"<b>{target_sentence}</b>"
         )
         assert update.message is not None
-        with open(mp3_path, "rb") as f:
-            await update.message.reply_document(document=f, caption=caption, parse_mode=ParseMode.HTML)
+        with open(wav_path, "rb") as f:
+            await update.message.reply_document(document=f, caption=caption, parse_mode=ParseMode.HTML, filename="audio.mp3")
         increment_usage(user_id)
     finally:
         try:
             import os
-            os.remove(mp3_path)
+            os.remove(wav_path)
         except Exception:
             pass
 
