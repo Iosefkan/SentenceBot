@@ -1,4 +1,5 @@
 import os
+import random
 import tempfile
 
 from config import SUPPORTED_LANGUAGES, XTTS_SPEAKER_WAV, logger
@@ -31,7 +32,7 @@ def synthesize_to_wav(text: str, lang_code: str) -> str:
             _tts_model.tts_to_file(text=text, language=tts_lang, speaker_wav=XTTS_SPEAKER_WAV, file_path=tmp_path)
         else:
             if _tts_model.speakers:
-                default_speaker_id = _tts_model.speakers[0]
+                default_speaker_id = _tts_model.speakers[random.randint(0, len(_tts_model.speakers) - 1)]
                 _tts_model.tts_to_file(text=text, language=tts_lang, speaker=default_speaker_id, file_path=tmp_path)
             else:
                 raise ValueError("No speaker_wav provided and no default speaker_id available.")
